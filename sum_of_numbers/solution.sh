@@ -1,11 +1,27 @@
-#!/bin/bash
+movie() {
+system=0;
+i=0;
 
-summing () {
-    for (( i=$1; i <= $2; i++ )) {
-        string=$((s + i))
-    }
+while (( $(echo "scale=20;$2*$i <= ($system+$1)" | bc) ))
+do
+  let i++;
+  system=$(echo "scale=20;$system+$2*($3^$i)" | bc);
 
-    echo "$string"
+  total=$(echo "scale=20;$system+$1" | bc)
+
+  [[ $total == *.* ]] && total=$(( ${total%.*} + 1))
+
+  if [[ $total -eq $(($2*$i)) ]]
+  then
+    let i++ 
+    break;
+  fi  
+
+done
+
+echo $i;
+
+
+
 }
-
-{ [ $1 -le $2 ] && summing $1 $2; } || { [ $1 -ge $2 ] && summing $2 $1; } || echo $1
+movie $1 $2 $3
